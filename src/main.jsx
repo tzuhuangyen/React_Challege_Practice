@@ -7,7 +7,7 @@ import { BrowserRouter } from 'react-router-dom'; // 导入 HashRouter
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter basename='/'>
+    <BrowserRouter basename='/React_Challege_Practice'>
       <App />
     </BrowserRouter>
   </React.StrictMode>
