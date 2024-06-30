@@ -3,8 +3,7 @@ import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base:
-    process.env.NODE_ENV === 'production' ? '/React_Challege_Practice/' : '',
+  base: process.env.NODE_ENV === 'production' ? '/React_Challege_Practice' : '',
 
   plugins: [react()],
   build: {
