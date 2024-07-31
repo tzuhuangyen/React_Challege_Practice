@@ -1,38 +1,41 @@
 import axios from 'axios';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 const Login = (props) => {
+  const navigate = useNavigate();
   const [data, setData] = useState({
     username: '',
     password: '',
   });
+  const [loginState, setLoginState] = useState({});
 
+  //取input值
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
+    // console.log(data);
   };
-
+  //提交数据
   const submit = async (e) => {
-    const res = await axios.post('/v2/admin/signin', data);
-    const { token, expired } = res.data;
-    axios.defaults.headers.common['Authorization'] = token;
-    console.log('token:', token);
-    console.log('login:', res.data.message);
-    document.cookie = `hexApiToken=${token};expires=${new Date(expired)}`;
+    try {
+      const res = await axios.post('/v2/admin/signin', data);
+      //從server傳來的response解構取得token
+      const { token, expired } = res.data;
+      //並設定為headers token的預設值
+      axios.defaults.headers.common['Authorization'] = token;
+      console.log('token:', token);
+      console.log('login:', res.data.message);
+      // 並儲存到cookie
+      document.cookie = `hexApiToken=${token};expires=${new Date(expired)}`;
+      if (res.data.success) {
+        navigate('/admin/products');
+      }
+    } catch (error) {
+      console.log(error);
+      setLoginState(error.response.data);
+    }
   };
-
-  useEffect(() => {
-    const token = document.cookie
-      .split(';')
-      .find((row) => row.startsWith('hexApiToken='))
-      ?.split('=')[1];
-    axios.defaults.headers.common['Authorization'] = token;
-    (async () => {
-      const productRes = await axios.get(
-        `/v2/api/${import.meta.env.VITE_REACT_APP_API_PATH}/admin/products/all`
-      );
-      console.log(productRes);
-    })();
-  }, []);
 
   return (
     <div>
@@ -41,8 +44,13 @@ const Login = (props) => {
           <div className='col-md-6'>
             <h2>登入帳號</h2>
 
-            <div className='alert alert-danger' role='alert'>
-              錯誤訊息
+            <div
+              className={`alert alert-danger ${
+                loginState.message ? 'd-block' : 'd-none'
+              }`}
+              role='alert'
+            >
+              {loginState.message}
             </div>
             <div className='mb-2'>
               <label htmlFor='email' className='form-label w-100'>
@@ -76,7 +84,6 @@ const Login = (props) => {
           </div>
         </div>
       </div>
-      )
     </div>
   );
 };

@@ -8,6 +8,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import axios from 'axios';
 import Login from './pages/Login';
+import Dashboard from './pages/admin/Dashboard';
+import AdminProducts from './pages/admin/AdminProducts';
+import DeleteModal from './components/DeleteModal';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -98,6 +101,10 @@ function App() {
 
       <Routes>
         <Route path='/login' element={<Login />}></Route>
+        <Route path='/admin' element={<Dashboard />}>
+          <Route path='products' element={<AdminProducts />}></Route>
+          <Route path='delete' element={<DeleteModal />}></Route>
+        </Route>
       </Routes>
     </>
   );
